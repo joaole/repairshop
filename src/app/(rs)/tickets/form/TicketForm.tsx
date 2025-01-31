@@ -125,27 +125,29 @@ export default function TicketForm({
               fieldTitle="Description"
               nameInSchema="description"
               className="h-96"
+              disabled={!isEditable}
             />
+            {isEditable ? (
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  className="w-3/4"
+                  variant="default"
+                  title="Save"
+                >
+                  Save
+                </Button>
 
-            <div className="flex gap-2">
-              <Button
-                type="submit"
-                className="w-3/4"
-                variant="default"
-                title="Save"
-              >
-                Save
-              </Button>
-
-              <Button
-                type="button"
-                variant="destructive"
-                title="reset"
-                onClick={() => form.reset(defaultValues)}
-              >
-                Rest
-              </Button>
-            </div>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  title="reset"
+                  onClick={() => form.reset(defaultValues)}
+                >
+                  Rest
+                </Button>
+              </div>
+            ) : null}
           </div>
         </form>
       </Form>
