@@ -13,13 +13,13 @@ import { Input } from "@/components/ui/input";
 import { InputHTMLAttributes } from "react";
 
 type Props<S> = {
-  filedTitle: string;
+  fieldTitle: string;
   nameInSchema: keyof S & string;
   className?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 export function InputWithLabel<S>({
-  filedTitle,
+  fieldTitle,
   nameInSchema,
   className,
   ...props
@@ -33,7 +33,7 @@ export function InputWithLabel<S>({
       render={({ field }) => (
         <FormItem>
           <FormLabel className="text-base" htmlFor={nameInSchema}>
-            {filedTitle}
+            {fieldTitle}
           </FormLabel>
 
           <FormControl>

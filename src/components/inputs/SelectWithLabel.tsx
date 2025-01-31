@@ -24,14 +24,14 @@ type DataObj = {
 };
 
 type Props<S> = {
-  filedTitle: string;
+  fieldTitle: string;
   nameInSchema: keyof S & string;
   data: DataObj[];
   className?: string;
 };
 
 export function SelectWithLabel<S>({
-  filedTitle,
+  fieldTitle,
   nameInSchema,
   data,
   className,
@@ -45,7 +45,7 @@ export function SelectWithLabel<S>({
       render={({ field }) => (
         <FormItem>
           <FormLabel className="text-base" htmlFor={nameInSchema}>
-            {filedTitle}
+            {fieldTitle}
           </FormLabel>
           <Select {...field} onValueChange={field.onChange}>
             <FormControl>

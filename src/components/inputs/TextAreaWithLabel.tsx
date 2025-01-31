@@ -13,13 +13,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { TextareaHTMLAttributes } from "react";
 
 type Props<S> = {
-  filedTitle: string;
+  fieldTitle: string;
   nameInSchema: keyof S & string;
   className?: string;
 } & TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 export function TextAreaWithLabel<S>({
-  filedTitle,
+  fieldTitle,
   nameInSchema,
   className,
   ...props
@@ -33,7 +33,7 @@ export function TextAreaWithLabel<S>({
       render={({ field }) => (
         <FormItem>
           <FormLabel className="text-base" htmlFor={nameInSchema}>
-            {filedTitle}
+            {fieldTitle}
           </FormLabel>
 
           <FormControl>

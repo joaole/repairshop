@@ -5,22 +5,29 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
-import { InputWithLabel } from "@/components/inputs/inputWithLabel";
-import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
+import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
+import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
+import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel";
+
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+
+import { StatesArray } from "@/constants/StatesArray";
 
 import {
   insertCustomerSchema,
   type insertCustomerSchemaType,
   type selectCustomerSchemaType,
 } from "@/zod-schemas/customer";
-import { StatesArray } from "@/constants/StatesArray";
 
 type Props = {
   customer?: selectCustomerSchemaType;
 };
 
 export default function CustomerForm({ customer }: Props) {
+  const { getPermission, isLoading } = useKindeBrowserClient();
+  const isManager = !isLoading && getPermission("manager")?.isGranted;
+
   const defaultValues: insertCustomerSchemaType = {
     id: customer?.id ?? 0,
     firstName: customer?.firstName ?? "",
@@ -33,6 +40,7 @@ export default function CustomerForm({ customer }: Props) {
     phone: customer?.phone ?? "",
     email: customer?.email ?? "",
     notes: customer?.notes ?? "",
+    active: customer?.active ?? true,
   };
 
   const form = useForm<insertCustomerSchemaType>({
@@ -49,7 +57,8 @@ export default function CustomerForm({ customer }: Props) {
     <div className="flex flex-col gap-1 sm:px-8">
       <div>
         <h2 className="text-2xl font-bold">
-          {customer?.id ? "Edit" : "New"} Customer Form
+          {customer?.id ? "Edit" : "New"} Customer{" "}
+          {customer?.id ? `#${customer.id}` : "Form"}
         </h2>
       </div>
       <Form {...form}>
@@ -59,57 +68,68 @@ export default function CustomerForm({ customer }: Props) {
         >
           <div className="flex flex-col gap-4 w-full max-w-xs">
             <InputWithLabel<insertCustomerSchemaType>
-              filedTitle="First Name"
+              fieldTitle="First Name"
               nameInSchema="firstName"
             />
 
             <InputWithLabel<insertCustomerSchemaType>
-              filedTitle="Last Name"
+              fieldTitle="Last Name"
               nameInSchema="lastName"
             />
 
             <InputWithLabel<insertCustomerSchemaType>
-              filedTitle="Address 1"
+              fieldTitle="Address 1"
               nameInSchema="address1"
             />
 
             <InputWithLabel<insertCustomerSchemaType>
-              filedTitle="Adress 2"
+              fieldTitle="Address 2"
               nameInSchema="address2"
             />
 
             <InputWithLabel<insertCustomerSchemaType>
-              filedTitle="City"
+              fieldTitle="City"
               nameInSchema="city"
             />
 
             <SelectWithLabel<insertCustomerSchemaType>
-              filedTitle="State"
+              fieldTitle="State"
               nameInSchema="state"
               data={StatesArray}
             />
           </div>
+
           <div className="flex flex-col gap-4 w-full max-w-xs">
             <InputWithLabel<insertCustomerSchemaType>
-              filedTitle="Zip Code"
+              fieldTitle="Zip Code"
               nameInSchema="zip"
             />
 
             <InputWithLabel<insertCustomerSchemaType>
-              filedTitle="Email"
+              fieldTitle="Email"
               nameInSchema="email"
             />
 
             <InputWithLabel<insertCustomerSchemaType>
-              filedTitle="Phone"
+              fieldTitle="Phone"
               nameInSchema="phone"
             />
 
             <TextAreaWithLabel<insertCustomerSchemaType>
-              filedTitle="Notes"
+              fieldTitle="Notes"
               nameInSchema="notes"
-              className="h-32"
+              className="h-40"
             />
+
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : isManager && customer?.id ? (
+              <CheckboxWithLabel<insertCustomerSchemaType>
+                fieldTitle="Active"
+                nameInSchema="active"
+                message="Yes"
+              />
+            ) : null}
 
             <div className="flex gap-2">
               <Button
@@ -124,10 +144,10 @@ export default function CustomerForm({ customer }: Props) {
               <Button
                 type="button"
                 variant="destructive"
-                title="reset"
+                title="Reset"
                 onClick={() => form.reset(defaultValues)}
               >
-                Rest
+                Reset
               </Button>
             </div>
           </div>

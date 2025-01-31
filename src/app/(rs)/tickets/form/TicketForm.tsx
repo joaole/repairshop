@@ -5,9 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
-import { InputWithLabel } from "@/components/inputs/inputWithLabel";
+import { InputWithLabel } from "@/components/inputs/InputWithLabel";
+import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
-//import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
 import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel";
 
 import { selectCustomerSchemaType } from "@/zod-schemas/customer";
@@ -21,9 +21,21 @@ import {
 type Props = {
   customer: selectCustomerSchemaType;
   ticket?: selectTicketSchemaType;
+  techs?: {
+    id: string;
+    description: string;
+  }[];
+  isEditable?: boolean;
 };
 
-export default function TicketForm({ customer, ticket }: Props) {
+export default function TicketForm({
+  customer,
+  ticket,
+  techs,
+  isEditable = true,
+}: Props) {
+  const isManager = Array.isArray(techs);
+
   const defaultValues: insertTicketSchemaType = {
     id: ticket?.id ?? "(New)",
     customerId: ticket?.customerId ?? customer.id,
@@ -57,22 +69,39 @@ export default function TicketForm({ customer, ticket }: Props) {
         >
           <div className="flex flex-col gap-4 w-full max-w-xs">
             <InputWithLabel<insertTicketSchemaType>
-              filedTitle="Title"
+              fieldTitle="Title"
               nameInSchema="title"
+              disabled={!isEditable}
             />
+            {isManager ? (
+              <SelectWithLabel<insertTicketSchemaType>
+                fieldTitle="Tech ID"
+                nameInSchema="tech"
+                data={[
+                  {
+                    id: "new-ticket@example.com",
+                    description: "new-ticket@example.com",
+                  },
+                  ...techs,
+                ]}
+              />
+            ) : (
+              <InputWithLabel<insertTicketSchemaType>
+                fieldTitle="Tech"
+                nameInSchema="tech"
+                readOnly={true}
+                disabled={true}
+              />
+            )}
 
-            <InputWithLabel<insertTicketSchemaType>
-              filedTitle="Tech"
-              nameInSchema="tech"
-              readOnly={true}
-              disabled={true}
-            />
-
-            <CheckboxWithLabel<insertTicketSchemaType>
-              filedTitle="Completed"
-              nameInSchema="completed"
-              message="Yes"
-            />
+            {ticket?.id ? (
+              <CheckboxWithLabel<insertTicketSchemaType>
+                fieldTitle="Completed"
+                nameInSchema="completed"
+                message="Yes"
+                disabled={!isEditable}
+              />
+            ) : null}
 
             <div className="mt-4 space-y-2">
               <h3 className="text-lg">Customer Info</h3>
@@ -93,7 +122,7 @@ export default function TicketForm({ customer, ticket }: Props) {
 
           <div className="flex flex-col gap-4 w-full max-w-xs">
             <TextAreaWithLabel<insertTicketSchemaType>
-              filedTitle="Description"
+              fieldTitle="Description"
               nameInSchema="description"
               className="h-96"
             />
