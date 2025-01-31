@@ -10,13 +10,12 @@ import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel";
 
-import { selectCustomerSchemaType } from "@/zod-schemas/customer";
-
 import {
   insertTicketSchema,
   type insertTicketSchemaType,
   type selectTicketSchemaType,
 } from "@/zod-schemas/ticket";
+import { selectCustomerSchemaType } from "@/zod-schemas/customer";
 
 type Props = {
   customer: selectCustomerSchemaType;
@@ -59,7 +58,11 @@ export default function TicketForm({
     <div className="flex flex-col gap-1 sm:px-8">
       <div>
         <h2 className="text-2xl font-bold">
-          {ticket?.id ? "Edit" : "New"} Ticket Form
+          {ticket?.id && isEditable
+            ? `Edit Ticket # ${ticket.id}`
+            : ticket?.id
+            ? `View Ticket # ${ticket.id}`
+            : "New Ticket Form"}
         </h2>
       </div>
       <Form {...form}>
@@ -73,6 +76,7 @@ export default function TicketForm({
               nameInSchema="title"
               disabled={!isEditable}
             />
+
             {isManager ? (
               <SelectWithLabel<insertTicketSchemaType>
                 fieldTitle="Tech ID"
@@ -89,7 +93,6 @@ export default function TicketForm({
               <InputWithLabel<insertTicketSchemaType>
                 fieldTitle="Tech"
                 nameInSchema="tech"
-                readOnly={true}
                 disabled={true}
               />
             )}
@@ -110,13 +113,13 @@ export default function TicketForm({
                 {customer.firstName} {customer.lastName}
               </p>
               <p>{customer.address1}</p>
-              {customer.address2 && <p>{customer.address2}</p>}
+              {customer.address2 ? <p>{customer.address2}</p> : null}
               <p>
                 {customer.city}, {customer.state} {customer.zip}
               </p>
               <hr className="w-4/5" />
               <p>{customer.email}</p>
-              <p>{customer.phone}</p>
+              <p>Phone: {customer.phone}</p>
             </div>
           </div>
 
@@ -127,6 +130,7 @@ export default function TicketForm({
               className="h-96"
               disabled={!isEditable}
             />
+
             {isEditable ? (
               <div className="flex gap-2">
                 <Button
@@ -141,10 +145,10 @@ export default function TicketForm({
                 <Button
                   type="button"
                   variant="destructive"
-                  title="reset"
+                  title="Reset"
                   onClick={() => form.reset(defaultValues)}
                 >
-                  Rest
+                  Reset
                 </Button>
               </div>
             ) : null}
