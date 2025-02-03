@@ -1,6 +1,8 @@
 import CustomerSearch from "./CustomerSearch";
 import { getCustomerSearchResults } from "@/lib/queries/getCustomerSearchResults";
 
+import * as Sentry from "@sentry/nextjs";
+
 export const metadata = {
   title: "Customers Search",
 };
@@ -16,8 +18,13 @@ export default async function Customers({
     return <CustomerSearch />;
   }
 
+  const span = Sentry.startInactiveSpan({
+    name: "getCustomerSearchResults-1",
+  });
+
   // quert the database
   const results = await getCustomerSearchResults(searchText);
+  span.end();
 
   // return results
   return (
