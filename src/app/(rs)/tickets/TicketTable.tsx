@@ -48,14 +48,11 @@ export default function TicketTable({ data }: Props) {
       (row) => {
         const value = row[columnName];
         if (columnName === "ticketData" && value instanceof Date) {
-          return (
-            value.toLocaleDateString("en-US"),
-            {
-              day: "numeric",
-              month: "2-digit",
-              year: "2-digit",
-            }
-          );
+          return value.toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          });
         }
         if (columnName === "completed") {
           return value ? "Completed" : "Open";
