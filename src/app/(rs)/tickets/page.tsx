@@ -1,10 +1,10 @@
-import TicketSearch from "./TicketSearch";
+import TicketSearch from "@/app/(rs)/tickets/TicketSearch";
 import { getOpenTickets } from "@/lib/queries/getOpenTickets";
-import { getTicketsSearchResults } from "@/lib/queries/getTicketsSearchResults";
+import { getTicketSearchResults } from "@/lib/queries/getTicketSearchResults";
 import TicketTable from "@/app/(rs)/tickets/TicketTable";
 
 export const metadata = {
-  title: "Tickets Search",
+  title: "Ticket Search",
 };
 
 export default async function Tickets({
@@ -28,12 +28,16 @@ export default async function Tickets({
     );
   }
 
-  const results = await getTicketsSearchResults(searchText);
+  const results = await getTicketSearchResults(searchText);
 
   return (
     <>
       <TicketSearch />
-      {results.length ? <TicketTable data={results} /> : null}
+      {results.length ? (
+        <TicketTable data={results} />
+      ) : (
+        <p className="mt-4">No results found</p>
+      )}
     </>
   );
 }
