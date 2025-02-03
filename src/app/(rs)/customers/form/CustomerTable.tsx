@@ -1,6 +1,7 @@
 "use client";
 
 import type { selectCustomerSchemaType } from "@/zod-schemas/customer";
+
 import {
   createColumnHelper,
   flexRender,
@@ -13,8 +14,8 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
   TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 
 import { useRouter } from "next/navigation";
@@ -26,19 +27,19 @@ type Props = {
 export default function CustomerTable({ data }: Props) {
   const router = useRouter();
 
-  const columnsHeadersArray: Array<keyof selectCustomerSchemaType> = [
+  const columnHeadersArray: Array<keyof selectCustomerSchemaType> = [
     "firstName",
     "lastName",
-    "phone",
     "email",
+    "phone",
     "city",
     "zip",
   ];
 
-  const columnHealper = createColumnHelper<keyof selectCustomerSchemaType>();
+  const columnHelper = createColumnHelper<selectCustomerSchemaType>();
 
-  const columns = columnsHeadersArray.map((columnName) => {
-    return columnHealper.accessor(columnName, {
+  const columns = columnHeadersArray.map((columnName) => {
+    return columnHelper.accessor(columnName, {
       id: columnName,
       header: columnName[0].toUpperCase() + columnName.slice(1),
     });
@@ -75,7 +76,7 @@ export default function CustomerTable({ data }: Props) {
           {table.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
-              className="cursor-pointer hover:ng-border/25 dark:hover:bg-ring/40"
+              className="cursor-pointer hover:bg-border/25 dark:hover:bg-ring/40"
               onClick={() =>
                 router.push(`/customers/form?customerId=${row.original.id}`)
               }
