@@ -2,8 +2,9 @@ import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import { config } from 'dotenv';
 
-config({ path: '.env.local' })
-
+if (process.env.NODE_ENV === 'development') {
+    config({ path: '.env.local' })
+}
 const sql = neon(process.env.NEON_DATABASE_URL!);
 //logger
 // const db = druzzle(sql, { logger: true });
