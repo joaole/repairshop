@@ -89,10 +89,18 @@ export default async function TicketFormPage({
         const { users } = await Users.getUsers();
 
         const techs = users
-          ? users.map((user) => ({ id: user.email!, description: user.email! }))
+          ? users.map((user) => ({
+              // email came from the Kinde Management API or the user's email default value new-ticket@example.com
+              // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+              id: user.email?.toLowerCase()!,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+              description: user.email?.toLowerCase()!,
+            }))
           : [];
 
-        return <TicketForm customer={customer} techs={techs} />;
+        return (
+          <TicketForm customer={customer} techs={techs} isManager={isManager} />
+        );
       } else {
         return <TicketForm customer={customer} />;
       }
@@ -122,7 +130,14 @@ export default async function TicketFormPage({
           ? users.map((user) => ({ id: user.email!, description: user.email! }))
           : [];
 
-        return <TicketForm customer={customer} ticket={ticket} techs={techs} />;
+        return (
+          <TicketForm
+            customer={customer}
+            ticket={ticket}
+            techs={techs}
+            isManager={isManager}
+          />
+        );
       } else {
         const isEditable =
           user.email?.toLowerCase() === ticket.tech.toLowerCase();
