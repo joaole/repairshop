@@ -20,10 +20,8 @@ import {
 
 import { useAction } from "next-safe-action/hooks";
 import { saveCustomerAction } from "@/app/actions/saveCustomerAction";
-
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
-
 import { DisplayServerActionResponse } from "@/components/DisplayServerActionResponse";
 
 import { useSearchParams } from "next/navigation";
@@ -85,17 +83,20 @@ export default function CustomerForm({ customer, isManager = false }: Props) {
   const {
     execute: executeSave,
     result: saveResult,
-    isExecuting: isSaving,
+    isPending: isSaving,
     reset: resetSaveAction,
   } = useAction(saveCustomerAction, {
     onSuccess({ data }) {
-      toast({
-        variant: "default",
-        title: "Success! 🎉",
-        description: data?.message,
-      });
+      if (data?.message) {
+        toast({
+          variant: "default",
+          title: "Success! 🎉",
+          description: data.message,
+        });
+      }
     },
-    onError() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onError({ error }) {
       toast({
         variant: "destructive",
         title: "Error",
